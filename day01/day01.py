@@ -1,19 +1,17 @@
+from collections import Counter
+
 from util.file import readfile
+
 
 def solve_part1(lines: list[str]) -> int:
     total = 0
 
-    left: list[int] = []
-    right: list[int] = []
-    for line in lines:
-        numbers = line.split()
-        left.append(int(numbers[0]))
-        right.append(int(numbers[1]))
+    left, right = parse_lines(lines)
     left.sort()
     right.sort()
 
-    for i in range(len(left)):
-        total += abs(left[i] - right[i])
+    for l, r in zip(left, right):
+        total += abs(l - r)
 
     return total
 
@@ -21,24 +19,34 @@ def solve_part1(lines: list[str]) -> int:
 def solve_part2(lines: list[str]) -> int:
     total = 0
 
+    left, right = parse_lines(lines)
+    entry_count = count_entries(right)
+
+    for l in left:
+        total += (l * entry_count.get(l, 0))
+
+    return total
+
+
+def parse_lines(lines: list[str]) -> tuple[list[int], list[int]]:
     left: list[int] = []
     right: list[int] = []
     for line in lines:
-        numbers = line.split()
-        left.append(int(numbers[0]))
-        right.append(int(numbers[1]))
-    left.sort()
-    right.sort()
+        l, r = map(int, line.split())
+        left.append(l)
+        right.append(r)
 
-    for i in range(len(left)):
-        count = 0
-        for j in range(len(right)):
-            if left[i] == right[j]:
-                count += 1
+    return left, right
 
-        total += (left[i] * count)
 
-    return total
+def count_entries(numbers: list[int]) -> Counter[int]:
+    result: Counter[int] = Counter()
+    for i in numbers:
+        result[i] += 1
+
+    return result
+
+
 if __name__ == '__main__':
     input_lines = readfile("day01/input.txt")
 
