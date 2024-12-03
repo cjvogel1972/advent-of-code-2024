@@ -6,9 +6,7 @@ def solve_part1(lines: list[str]) -> int:
 
     for line in lines:
         levels = list(map(int, line.split()))
-        safe = check_report(levels)
-
-        if safe:
+        if check_report(levels):
             safe_count += 1
 
     return safe_count
@@ -19,34 +17,28 @@ def solve_part2(lines: list[str]) -> int:
 
     for line in lines:
         levels = list(map(int, line.split()))
-
-        safe = check_report(levels)
-        if not safe:
-            for i in range(len(levels)):
-                safe = check_report(levels[:i] + levels[i+1:])
-                if safe:
-                    break
-
-        if safe:
+        if check_report(levels):
             safe_count += 1
+        else:
+            for i in range(len(levels)):
+                if check_report(levels[:i] + levels[i + 1:]):
+                    safe_count += 1
+                    break
 
     return safe_count
 
 
 def check_report(levels: list[int]) -> bool:
-    direction = 0
+    direction = compute_direction(levels[0], levels[1])
+    if direction == 0:
+        return False
+
     safe = True
     for i in range(len(levels) - 1):
-        if i == 0:
-            direction = compute_direction(levels[i], levels[i + 1])
-            if direction == 0:
-                safe = False
-                break
-
         if compute_direction(levels[i], levels[i + 1]) != direction or not safe_interval(levels[i], levels[i + 1]):
             safe = False
             break
-            
+
     return safe
 
 
