@@ -7,8 +7,8 @@ def solve_part1(lines: list[str]) -> int:
     total = 0
 
     for line in lines:
-        matches = re.findall("mul\((\d+),(\d+)\)", line)
-        for l,r in matches:
+        matches = re.findall("mul\((\d{1,3}),(\d{1,3})\)", line)
+        for l, r in matches:
             total += int(l) * int(r)
 
     return total
@@ -19,7 +19,7 @@ def solve_part2(lines: list[str]) -> int:
     enabled = True
 
     for line in lines:
-        matches = re.findall("(do|don't|mul)\(((\d+),(\d+))?\)", line)
+        matches = re.findall("(do|don't|mul)\(((\d{1,3}),(\d{1,3}))?\)", line)
 
         for match in matches:
             if match[0] == "do":
