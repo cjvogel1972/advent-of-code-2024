@@ -1,5 +1,5 @@
 from util.file import readfile
-from util.grid import good_square
+from util.grid import good_square, directions
 
 
 def solve_part1(lines: list[str]) -> int:
@@ -9,14 +9,8 @@ def solve_part1(lines: list[str]) -> int:
     for i in range(len(puzzle)):
         for j in range(len(puzzle[0])):
             if puzzle[i][j] == "X":
-                total += find_mas(puzzle, "MAS", i, j, -1, -1)
-                total += find_mas(puzzle, "MAS", i, j, -1, 0)
-                total += find_mas(puzzle, "MAS", i, j, -1, 1)
-                total += find_mas(puzzle, "MAS", i, j, 0, 1)
-                total += find_mas(puzzle, "MAS", i, j, 1, 1)
-                total += find_mas(puzzle, "MAS", i, j, 1, 0)
-                total += find_mas(puzzle, "MAS", i, j, 1, -1)
-                total += find_mas(puzzle, "MAS", i, j, 0, -1)
+                for d in directions:
+                    total += find_xmas(puzzle, "XMAS", i, j, d[0], d[1])
 
     return total
 
@@ -28,27 +22,25 @@ def solve_part2(lines: list[str]) -> int:
     for i in range(len(puzzle)):
         for j in range(len(puzzle[0])):
             if puzzle[i][j] == "A":
-                total += find_ms(puzzle, i, j)
+                total += find_x_mas(puzzle, i, j)
 
     return total
 
 
-def find_mas(puzzle: list[list[str]], word: str, row: int, col: int, dx: int, dy: int) -> int:
-    if good_square(puzzle, row + dx, col + dy):
-        if puzzle[row + dx][col + dy] == word[0]:
-            if len(word) == 1:
-                return 1
-            return find_mas(puzzle, word[1:], row + dx, col + dy, dx, dy)
+def find_xmas(puzzle: list[list[str]], word: str, row: int, col: int, dx: int, dy: int) -> int:
+    if good_square(puzzle, row + (dx * (len(word) - 1)), col + (dy * (len(word) - 1))):
+        if all([puzzle[row + (dx * i)][col + (dy * i)] == word[i] for i in range(len(word))]):
+            return 1
     return 0
 
 
-def find_ms(puzzle: list[list[str]], row: int, col: int) -> int:
+def find_x_mas(puzzle: list[list[str]], row: int, col: int) -> int:
     if good_square(puzzle, row - 1, col - 1) and good_square(puzzle, row + 1, col + 1):
-        if (puzzle[row - 1][col - 1] == 'M'and puzzle[row + 1][col + 1] == 'S') or (puzzle[row - 1][col - 1] == 'S'and puzzle[row + 1][col + 1] == 'M'):
-            if good_square(puzzle, row + 1, col - 1) and good_square(puzzle, row - 1, col + 1):
-                if (puzzle[row + 1][col - 1] == 'M' and puzzle[row - 1][col + 1] == 'S') or (
-                        puzzle[row + 1][col - 1] == 'S' and puzzle[row - 1][col + 1] == 'M'):
-                    return 1
+        if ((puzzle[row - 1][col - 1] == 'M' and puzzle[row + 1][col + 1] == 'S') or (
+                puzzle[row - 1][col - 1] == 'S' and puzzle[row + 1][col + 1] == 'M')) and (
+                (puzzle[row + 1][col - 1] == 'M' and puzzle[row - 1][col + 1] == 'S') or (
+                puzzle[row + 1][col - 1] == 'S' and puzzle[row - 1][col + 1] == 'M')):
+            return 1
     return 0
 
 
