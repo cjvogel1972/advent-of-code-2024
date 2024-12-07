@@ -2,57 +2,50 @@ from util.file import readfile
 
 
 def solve_part1(lines: list[str]) -> int:
-    total = 0
-
-    for line in lines:
-        test_value, numbers = line.split(":")
-        test_value = int(test_value)
-        nums = list(map(int, numbers.split()))
-
-        for i in range(2 ** (len(nums) - 1)):
-            result = nums[0]
-            tmp = i
-            for j in range(1, len(nums)):
-                if tmp % 2 == 0:
-                    result *= nums[j]
-                else:
-                    result += nums[j]
-
-                tmp = tmp // 2
-
-            if result == test_value:
-                total += result
-                break
-
-    return total
+    return solve(lines, 2)
 
 
 def solve_part2(lines: list[str]) -> int:
+    return solve(lines, 3)
+
+
+def solve(lines: list[str], number_operators: int) -> int:
     total = 0
 
     for line in lines:
-        test_value, numbers = line.split(":")
-        test_value = int(test_value)
-        nums = list(map(int, numbers.split()))
+        test_value, numbers = parse_line(line)
 
-        for i in range(3 ** (len(nums) - 1)):
-            result = nums[0]
+        for i in range(number_operators ** (len(numbers) - 1)):
+            result = numbers[0]
             tmp = i
-            for j in range(1, len(nums)):
-                if tmp % 3 == 0:
-                    result *= nums[j]
-                elif tmp % 3 == 1:
-                    result += nums[j]
-                else:
-                    result = int(str(result) + str(nums[j]))
-
-                tmp = tmp // 3
+            for j in range(1, len(numbers)):
+                result = compute(result, numbers[j], tmp % number_operators)
+                tmp = tmp // number_operators
 
             if result == test_value:
                 total += result
                 break
 
     return total
+
+
+def parse_line(line: str) -> tuple[int, list[int]]:
+    test_value, numbers = line.split(":")
+    test_value = int(test_value)
+    nums = list(map(int, numbers.split()))
+
+    return test_value, nums
+
+
+def compute(left: int, right: int, op: int) -> int:
+    if op == 0:
+        result = left + right
+    elif op == 1:
+        result = left * right
+    else:
+        result = int(str(left) + str(right))
+
+    return result
 
 
 if __name__ == '__main__':
