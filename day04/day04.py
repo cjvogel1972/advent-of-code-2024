@@ -36,10 +36,9 @@ def find_xmas(puzzle: list[list[str]], word: str, row: int, col: int, dx: int, d
 
 def find_x_mas(puzzle: list[list[str]], row: int, col: int) -> int:
     if good_square(puzzle, row - 1, col - 1) and good_square(puzzle, row + 1, col + 1):
-        if ((puzzle[row - 1][col - 1] == 'M' and puzzle[row + 1][col + 1] == 'S') or (
-                puzzle[row - 1][col - 1] == 'S' and puzzle[row + 1][col + 1] == 'M')) and (
-                (puzzle[row + 1][col - 1] == 'M' and puzzle[row - 1][col + 1] == 'S') or (
-                puzzle[row + 1][col - 1] == 'S' and puzzle[row - 1][col + 1] == 'M')):
+        diag1 = puzzle[row - 1][col - 1] + puzzle[row + 1][col + 1]
+        diag2 = puzzle[row + 1][col - 1] + puzzle[row - 1][col + 1]
+        if diag1 in ["MS", "SM"] and diag2 in ["MS", "SM"]:
             return 1
     return 0
 
