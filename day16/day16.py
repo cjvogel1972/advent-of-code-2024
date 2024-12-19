@@ -1,5 +1,4 @@
 import heapq
-import time
 
 from util.file import readfile
 from util.grid import cardinal_directions
@@ -19,13 +18,7 @@ def solve_part1(lines: list[str]) -> int:
         if loc == end:
             end_states.add((loc, dir_index))
         for index in left_right_straight(dir_index):
-            new_loc = loc
-            cost = 1000
-            if index == dir_index:
-                nr, nc = tuple_add(loc, cardinal_directions[index])
-                if lines[nr][nc] != "#":
-                    cost = 1
-                    new_loc = (nr, nc)
+            cost, new_loc = compute_location_cost(lines, loc, dir_index, index)
 
             s = score + cost
             if s < scores.get((new_loc, index), float("inf")):
@@ -53,13 +46,7 @@ def solve_part2(lines: list[str]) -> int:
             best_end_cost = score
             end_states.add((loc, dir_index))
         for index in left_right_straight(dir_index):
-            new_loc = loc
-            cost = 1000
-            if index == dir_index:
-                nr, nc = tuple_add(loc, cardinal_directions[index])
-                if lines[nr][nc] != "#":
-                    cost = 1
-                    new_loc = (nr, nc)
+            cost, new_loc = compute_location_cost(lines, loc, dir_index, index)
 
             s = score + cost
             lowest = scores.get((new_loc, index), float("inf"))
@@ -86,7 +73,21 @@ def solve_part2(lines: list[str]) -> int:
     return len(best_squares)
 
 
+def compute_location_cost(lines, loc, orig_dir_index, index):
+    new_loc = loc
+    cost = 1000
+    if index == orig_dir_index:
+        nr, nc = tuple_add(loc, cardinal_directions[index])
+        if lines[nr][nc] != "#":
+            cost = 1
+            new_loc = (nr, nc)
+    return cost, new_loc
+
+
 def parse_input(lines: list[str]) -> tuple[tuple[int, int], tuple[int, int]]:
+    start = (0, 0)
+    end = (0, 0)
+
     for r in range(len(lines)):
         for c in range(len(lines[0])):
             if lines[r][c] == "S":
