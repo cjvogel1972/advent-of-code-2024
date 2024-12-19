@@ -30,10 +30,9 @@ def memoize(f):
     fast = {}
 
     def partner(design: str, patterns: list[str]):
-        r = tuple(patterns)
-        if (design, r) not in fast:
-            fast[(design, r)] = f(design, r)
-        return fast[(design, r)]
+        if design not in fast:
+            fast[design] = f(design, patterns)
+        return fast[design]
 
     return partner
 
