@@ -28,7 +28,7 @@ class Test(unittest.TestCase):
         pointer, reg_a, reg_b, reg_c = day.run_op(5, 1, output, reg_a, reg_b, reg_c, 0)
         pointer, reg_a, reg_b, reg_c = day.run_op(5, 4, output, reg_a, reg_b, reg_c, 0)
 
-        self.assertEqual(['0', '1', '2'], output)
+        self.assertEqual([0, 1, 2], output)
 
     def test_solve_part1_example4(self):
         output = []

@@ -51,14 +51,12 @@ def search(program: list[int], iteration: int, prev_a: int) -> int:
 def run_program(program, a, b, c) -> list[int]:
     output = []
     ptr = 0
-    while True:
+    while ptr < len(program):
         op = program[ptr]
         combo_op = program[ptr + 1]
         ptr += 2
 
         ptr, a, b, c = run_op(op, combo_op, output, a, b, c, ptr)
-        if ptr == -1:
-            break
 
     return output
 
@@ -74,7 +72,8 @@ def run_op(op: int, combo_op: int, output: list[int], a: int, b: int, c: int, pt
     elif op == 2:
         b = op_value % 8
     elif op == 3:
-        ptr = -1 if a == 0 else op_value
+        if a != 0:
+            ptr = 0
     elif op == 4:
         b = b ^ c
     elif op == 5:
